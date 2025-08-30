@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces.Repositories
 {
-    public interface ICustomerRepository : IRepository<Customer>
+    public interface IUserRepository : IRepository<User>
     {
-        Task<Customer?> GetByEmailAsync(string email);
+        Task<User?> GetByUsernameAsync(string username);
     }
 }

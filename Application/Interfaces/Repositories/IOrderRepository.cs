@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces.Repositories
 {
-    public interface ICustomerRepository : IRepository<Customer>
+    public interface IOrderRepository : IRepository<Order>
     {
-        Task<Customer?> GetByEmailAsync(string email);
+        Task<IEnumerable<Order>> GetByCustomerAsync(Guid customerId);
+        Task<IEnumerable<Order>> GetPendingOrdersAsync();
     }
 }
