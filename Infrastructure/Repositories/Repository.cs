@@ -10,55 +10,42 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : BaseEntity
+    public class Repository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
     {
-        protected readonly AppDbContext _context;
-        protected readonly DbSet<T> _dbSet;
+        private readonly AppDbContext _context;
+        private readonly DbSet<TEntity> _dbSet;
 
         public Repository(AppDbContext context)
         {
             _context = context;
-            _dbSet = _context.Set<T>();
+            _dbSet = context.Set<TEntity>();
         }
 
-        public async Task<T?> GetByIdAsync(Guid id)
+        public async Task<TEntity?> GetByIdAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
         }
 
-        public async Task AddAsync(T entity)
+        public async Task AddAsync(TEntity entity)
         {
             await _dbSet.AddAsync(entity);
         }
 
-        public void Update(T entity)
+        public async Task UpdateAsync(TEntity entity)
         {
             _dbSet.Update(entity);
-        }
-
-        public void Delete(T entity)
-        {
-            _dbSet.Remove(entity);
-        }
-
-        public Task UpdateAsync(T entity)
-        {
-            _dbSet.Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
-            return Task.CompletedTask;
         }
 
         public async Task DeleteAsync(Guid id)
         {
             var entity = await _dbSet.FindAsync(id);
-            if (entity is null) return;
-
-            _dbSet.Remove(entity);
+            if (entity != null)
+                _dbSet.Remove(entity);
         }
     }
 }

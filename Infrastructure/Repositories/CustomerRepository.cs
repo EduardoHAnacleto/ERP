@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class CustomerRepository : ICustomerRepository
+    public class CustomerRepository : ICustomerRepository, IGenericRepository<Customer>
     {
         private readonly AppDbContext _context;
 
@@ -57,6 +57,11 @@ namespace Infrastructure.Repositories
         Task IRepository<Customer>.AddAsync(Customer entity)
         {
             return AddAsync(entity);
+        }
+
+        async Task IGenericRepository<Customer>.AddAsync(Customer entity)
+        {
+            await _context.Customers.AddAsync(entity);
         }
     }
 }
