@@ -14,7 +14,7 @@ namespace Domain
 
         public List<OrderItem> Items { get; private set; } = new();
 
-        private Order() { }
+        public Order() { }
         public Order(Guid customerId) { CustomerId = customerId; }
 
         public void AddItem(Guid productId, int quantity, decimal unitPrice)

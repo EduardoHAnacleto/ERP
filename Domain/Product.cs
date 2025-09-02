@@ -15,7 +15,7 @@ namespace Domain
         public decimal Price { get; private set; }
         public int StockQuantity { get; private set; }
 
-        private Product() { }
+        public Product() { }
         public Product(string name, string description, decimal price, int stockQuantity, Brand brand, Category category)
         {
             Name = name; Description = description; Price = price; StockQuantity = stockQuantity; Brand = brand; Category = category;

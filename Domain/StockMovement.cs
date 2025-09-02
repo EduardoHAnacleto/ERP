@@ -13,7 +13,7 @@ namespace Domain
         public DateTime MovementDate { get; private set; } = DateTime.UtcNow;
         public string Reason { get; private set; } = string.Empty;
 
-        private StockMovement() { }
+        public StockMovement() { }
         public StockMovement(Guid productId, int quantityChange, string reason)
         {
             ProductId = productId; QuantityChange = quantityChange; Reason = reason;

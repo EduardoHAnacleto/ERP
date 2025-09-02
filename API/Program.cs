@@ -1,6 +1,8 @@
+using API.Mapping;
 using Application.Interfaces.Repositories;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +15,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //builder.Services.AddDbContext<AppDbContext>(options =>
-    //options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));   To do
+//options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));   To do
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();

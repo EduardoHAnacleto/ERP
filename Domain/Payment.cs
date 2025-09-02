@@ -14,7 +14,7 @@ namespace Domain
         public PaymentMethod PaymentMethod { get; private set; }
         public string Status { get; private set; } = "Pending";
 
-        private Payment() { }
+        public Payment() { }
         public Payment(Guid orderId, decimal amount, PaymentMethod method)
         {
             OrderId = orderId; Amount = amount; PaymentMethod = method;

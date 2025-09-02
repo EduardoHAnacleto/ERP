@@ -13,7 +13,7 @@ namespace Domain
         public string Phone { get; private set; } = string.Empty;
         public string Address { get; private set; } = string.Empty;
 
-        private Customer() { }
+        public Customer() { }
         public Customer(string name, string email, string phone, string address)
         {
             Name = name;

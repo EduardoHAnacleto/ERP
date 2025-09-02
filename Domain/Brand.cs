@@ -12,7 +12,7 @@ namespace Domain
         [Required] public string Name { get; private set; }
 
 
-        private Brand() { }
+        public Brand() { }
 
         public Brand(string name)
         {

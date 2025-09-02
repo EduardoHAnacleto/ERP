@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Interfaces.Repositories;
+using AutoMapper;
 using Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,17 +9,27 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public abstract class BaseController<TEntity, TDto> : ControllerBase
-       where TEntity : BaseEntity, new()
-       where TDto : class
+    public class BaseController<TEntity, TDto> : ControllerBase
+        where TEntity : BaseEntity, new()
+        where TDto : class
     {
         private readonly IGenericRepository<TEntity> _repository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        protected BaseController(IUnitOfWork unitOfWork, IGenericRepository<TEntity> repository)
+        public BaseController(IGenericRepository<TEntity> repository, IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
             _repository = repository;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+        }
+
+        [HttpGet]
+        public virtual async Task<ActionResult<IEnumerable<TDto>>> GetAll()
+        {
+            var entities = await _repository.GetAllAsync();
+            var dtos = _mapper.Map<IEnumerable<TDto>>(entities);
+            return Ok(dtos);
         }
 
         [HttpGet("{id:guid}")]
@@ -26,47 +37,38 @@ namespace API.Controllers
         {
             var entity = await _repository.GetByIdAsync(id);
             if (entity == null) return NotFound();
-
-            var dto = MapToDto(entity);
+            var dto = _mapper.Map<TDto>(entity);
             return Ok(dto);
         }
 
         [HttpPost]
-        public virtual async Task<ActionResult> Create(TDto dto)
+        public virtual async Task<ActionResult<TDto>> Post([FromBody] TDto dto)
         {
-            var entity = MapToEntity(dto);
-            //entity.Id = Guid.NewGuid();
-
+            var entity = _mapper.Map<TEntity>(dto);
             await _repository.AddAsync(entity);
             await _unitOfWork.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetById), new { id = entity.Id }, dto);
+            var result = _mapper.Map<TDto>(entity);
+            return CreatedAtAction(nameof(GetById), new { id = entity.Id }, result);
         }
 
         [HttpPut("{id:guid}")]
-        public virtual async Task<ActionResult> Update(Guid id, TDto dto)
+        public virtual async Task<ActionResult<TDto>> Put(Guid id, [FromBody] TDto dto)
         {
             var existing = await _repository.GetByIdAsync(id);
             if (existing == null) return NotFound();
-
-            UpdateEntity(existing, dto);
+            _mapper.Map(dto, existing);
             await _repository.UpdateAsync(existing);
             await _unitOfWork.SaveChangesAsync();
-
-            return NoContent();
+            var result = _mapper.Map<TDto>(existing);
+            return Ok(result);
         }
 
         [HttpDelete("{id:guid}")]
-        public virtual async Task<ActionResult> Delete(Guid id)
+        public virtual async Task<IActionResult> Delete(Guid id)
         {
             await _repository.DeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
             return NoContent();
         }
-
-        // 🔹 Métodos abstratos para mapear DTO <-> Entidade
-        protected abstract TDto MapToDto(TEntity entity);
-        protected abstract TEntity MapToEntity(TDto dto);
-        protected abstract void UpdateEntity(TEntity entity, TDto dto);
     }
 }

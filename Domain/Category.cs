@@ -11,7 +11,7 @@ namespace Domain
     {
         [Required] public string Name { get; private set; }
         public string Description { get; private set; }
-        private Category() { }
+        public Category() { }
         public Category(string name, string description)
         {
             Name = name;

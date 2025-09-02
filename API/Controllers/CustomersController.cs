@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using Application.Interfaces.Repositories;
+using AutoMapper;
 using Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +10,9 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class DeliveryController : BaseController<Delivery, DeliveryDto>
+    public class CustomersController : BaseController<Customer, CustomerDto>
     {
-        public DeliveryController(IGenericRepository<Delivery> repository, IUnitOfWork unitOfWork)
-    : base(repository, unitOfWork) { }
+        public CustomersController(IGenericRepository<Customer> repository, IUnitOfWork unitOfWork, IMapper mapper)
+            : base(repository, unitOfWork, mapper) { }
     }
 }

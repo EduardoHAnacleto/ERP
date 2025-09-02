@@ -32,4 +32,4 @@ namespace Application.DTOs
         public int StockQuantity { get; set; }
     }
 }
-}
+
